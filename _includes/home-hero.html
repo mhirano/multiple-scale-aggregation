@@ -9,19 +9,23 @@
         <div class="hero-content wow fadeIn">
 
           <div style="padding: 20px 0px 0px 0px;">
-            <h2 class="text-center">Project Title</h2>
+            <h2 class="text-center"><span style="display: inline-block;">Multiple Scale Aggregation with Patch Multiplexing</span> <span span style="display: inline-block;">for High-speed Inter-vehicle Distance Estimation</span></h2>
           </div>
           <div style="padding: 10px 0px 0px 0px;">
             <div style="text-align:center;font-size:14pt;">
               <div style="padding: 5px 0px 5px 0px">
-                <a href="http://link-to-author-1-website/">Author 1<sup>&#8224</sup></a>,
-                <a href="http://link-to-author-2-website/">Author 2<sup>&#8224</sup></a>
+                <a href="http://www.hfr.iis.u-tokyo.ac.jp/members/hirano/index-e.html">Masahiro Hirano<sup>1</sup></a>,
+                <a href="http://www.hfr.iis.u-tokyo.ac.jp/members/yamakawa/index-e.html">Yuji Yamakawa<sup>1</sup></a>,
+                <a href="https://scc.ist.hokudai.ac.jp/~senoo/index-e.html">Taku Senoo<sup>2</sup></a>,<br>
+                Norimasa Kishi<sup>1</sup>,
+                <a href="http://ishikawa-vision.org/members/ishikawa/ishikawa-e.html">Masatoshi Ishikawa<sup>1</sup></a>
               </div>
               <div style="padding: 5px 0px 5px 0px">
-                <span><sup>&#8224</sup> Your affiliation</span>
+                <span><sup>1</sup> The University of Tokyo</span>, 
+                <span><sup>2</sup> Hiroshima University </span>
               </div>
               <div style="padding: 5px 0px 5px 0px">
-                <div class="venue text-center"><b>CONFERENCE YEAR</b></div>
+                <div class="venue text-center"><b>IEEE Intelligent Vehicles Symposium 2021 (IV 2021)</b></div>
               </div>
             </div>
           </div>
@@ -29,7 +33,7 @@
           <div class="hero-buttons">
 
             {% if site.twitter_username != '' %}
-              <a href="https://link-to-arxiv/"><button class="btn btn-default btn-lg"><i class="fa fa-paperclip fa-lg"></i>Paper</button></a>
+              <a href="./res/hirano_IV2021.pdf"><button class="btn btn-default btn-lg"><i class="fa fa-paperclip fa-lg"></i>Paper (Author's copy)</button></a>
             {% endif %}
             {% if site.github_username != '' %}
               <a href="https://link-to-youtube/"><button class="btn btn-default btn-lg"><i class="fa fa-youtube-play fa-lg"></i>YouTube</button></a>
@@ -37,34 +41,89 @@
 
           </div>
 
-          <br>
-          <div style="width:60%;margin-left:auto;margin-right:auto;">
-          <img class="img-responsive" src="./res/eyecatch.png" title="title">
+          <div style="width:100%;margin-left:auto;margin-right:auto;">
+          <img class="img-responsive" src="./res/cover-image.png" title="a-mosse">
           </div>
           <br>
 
           <div class="section">
             <h3>Abstract</h3>
             <hr>
-            <p>Abstract</p>
+            <p>This paper proposes an accurate and robust inter-vehicle distance estimation method using a stereo high-speed vision. The framework involves two phases: a tracking phase, in which a preceding vehicle is accurately and stably tracked by a novel visual tracking algorithm optimized for stereo high-speed vision; and a distance estimation phase, in which multiple distance estimations by scaling are aggregated to provide an accurate and robust estimation with a specially designed technique, patch multiplexing, to perform the aggregation efficiently and effectively.
+            By using a high-speed laser rangefinder to compare not only distance, but also velocity and acceleration using a Kalman filter, we showed that the accuracy of inter-vehicle distance estimation can be favorably compared with the laser rangefinder.</p>
+          </div>
+          <br>
+          <div class="section">
+            <h3>How to track the front vehicle?</h3>
+            <hr>
+            <p>
+              To measure the distance to the front vehicle, we need to identify the front vehicle in both cameras. The initial bounding box is estimated independently in both cameras using a deep learning-based object detection method. Assuming that the front vehicle is in the same lane, matching is performed to identify the bounding box of the front vehicle on both cameras. As shown in the figure, this bounding box is then tracked using a method, called <i>Alternating MOSSE (A-MOSSE)</i>, which leverages stereo high-speed vision. In this method, both cameras share the same correlation filter and update it alternately, resulting in robust, high-speed, and accurate vehicle tracking as shown in the upfront video.
+              It is possible to measure the distance to the front vehicle using triangulation, but as we will see later, it is not accurate enough to measure the velocity and acceleration.
+            </p>
+            <br>
+            <div style="width:80%;margin-left:auto;margin-right:auto;">
+            <img class="img-responsive" src="./res/a-mosse.png" title="a-mosse">
+            </div>
+            <br>
+          </div>
+          <br>
+          <div class="section">
+            <h3>How to measure the distance accurately and robustly?</h3>
+            <hr>
+            <p>
+              We propose to use scale-based ranging to achieve higher accuracy. To explain the principle, we consider a situation where a camera mounted on ego-vehicle is measuring the distance to the blue car in front, as shown in the figure below.
+              At a certain time, the distance to the blue car is estimated to be 20m by, for example, triangulation. After that, when the blue car moves away to 40 meters ahead, the apparent size of the car should be reduced by half. Scale-based ranging applies this principle to estimate the distance to the car by estimating the scaling rate of the appearance of the car. The apparent scaling rate of the car is estimated by using a method based on phase-only correlation. This method achieves highly accurate and robust estimation even under intensive vibration. In the proposed method, we <i>aggregate</i> multiple distance measurements by scale-based ranging to achieve higher estimation accuracy. Aggregation involves robust averaging, which reduces the variance of the measurement through statistical processing and efficiently removes outliers from the estimations. However, simply performing Aggregation will increase computational cost.
+            </p>
+            <div style="width:80%;margin-left:auto;margin-right:auto;">
+              <img class="img-responsive" src="./res/multiple-scale-aggregation.png" title="multiple-scale-aggregation">
+            </div>
+            <br>
+            <p>
+              As a remedy to this problem, we proposed <i>Patch Multiplexing</i>. Suppose a car in front of us is gradually approaching, the size of the bounding box will gradually increase. In this case, the scale of the truck at current frame with respect to the past frames is calculated for the number of frames to be aggregated, and the amount of calculation increases proportionally. In this study, we discretize the size of the patches used for scale calculation so that the results of previous calculations can be reused. However, this discretization is not always enough to achieve a sufficient number of aggregations. To solve this problem, we propose patch multiplexing, which pre-computes patches in keyframes one size larger and one size smaller. This allows for efficient aggregation by doing the necessary processing for scale calculation as much as possible in advance. Although this will increase the amount of computation for past frames to be used for aggregation, it will not affect the real-time performance because the processing for keyframes can be asynchronously executed.
+            </p>
+            <div style="width:80%;margin-left:auto;margin-right:auto;">
+              <img class="img-responsive" src="./res/patch-multiplexing.png" title="patch-multiplexing">
+            </div>
           </div>
           <br>
           <div class="section">
             <h3>Results</h3>
             <hr />
-            <p>Results.</p>
+            <p>
+              We demonsrated the proposed system in three different scenes. 
+              In the first scene, we were following a truck on the highway, which is the most common situation in truck platooning. We can see the bounding box of the truck and its distance from the ego-vehicle. The estimated relative velocity and acceleration are also displayed in the speedometers below. Although the front truck was slightly tilted when approaching a curve, we can see that the bounding box is pretty stable and the distance is estimated accurately.
+              </p>
             <div class="row align-items-center">
               <div class="col justify-content-center text-center">
                 <video width="60%" playsinline="" autoplay="" loop="" preload="" muted="">
-                  <source src="./res/sample-video.mp4" type="video/mp4">
+                  <source src="./res/approaching-and-leaving.webm" type="video/webm">
                   Your browser does not support the video tag.
                 </video>
+              </div>
+            </div>
+            <br>
+            <p>
+              In the second scene (left), a parked truck that was more than 100m away was approached to about 10m by sudden acceleration and braking. As we can see, the distance, velocity, and acceleration can be estimated stably without losing tracking even in the situation where relative velocity and acceleration are quite high.
+              In the last scene (right), both the front vehicle and the ego-vehicle were suffering intensive vibration and the slope was changing in the middle of the scene. Even in this challenging situation, we can see that the front vehicle can be stably tracked, and accurate distance estimation can be achieved. For further analysis, please refer to our paper.
+            </p>
+            <div class="section">
+              <div id="videoal">
+                <div class="video">
+                  <video width="50%" playsinline="" autoplay="" loop="" preload="" muted="">
+                    <source src="./res/sudden-throttle-and-braking.webm" type="video/webm">
+                  </video>
+                </div>
+                <div class="video">
+                  <video width="50%" playsinline="" autoplay="" loop="" preload="" muted="">
+                    <source src="./res/intensive-vibration.webm" type="video/webm">
+                  </video>
+                </div>
               </div>
             </div>
           </div>
           <br>
           <div class="section">
-            <h3>Video</h3>
+            <h3>YouTube</h3>
             <hr />
             <iframe class="youtube-video" src="https://www.youtube.com/embed/5kW0RtcJZC8" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
@@ -74,11 +133,11 @@
             <hr />
             <div style="text-align:left;font-size:8px;">
               <pre><code>
-@inproceedings{AuthorsYear,
-  title={Paper title},
-  author={Authors},
-  booktitle={Conference},
-  year={Year}
+@inproceedings{hirano21msa,
+  title={Multiple Scale Aggregation with Patch Multiplexing for High-speed Inter-vehicle Distance Estimation},
+  author={Masahiro Hirano, Yuji Yamakawa, Taku Senoo, Norimasa Kishi, Masatoshi Ishikawa},
+  booktitle={Proceedings of the IEEE Intelligent Vehicles Symposium (IV)},
+  year={2021}
 }
                 </code></pre>
             </div>

@@ -334,6 +334,28 @@ video {
   }
 }
 
+#videoal {
+  /* ... put any margin, padding, etc. here you like */
+  display:table;
+  border-collapse:separate;
+  border-spacing: 8px 0px;
+}
+
+#videoal div.video {
+  display: table-cell;
+  zoom: 1;
+  *display: inline;
+  // width: 200px;
+  // height: 200px;
+  margin: 0 10px 10px 0;
+}
+
+#videoal div.video video {
+  width: 100%;
+  height: 100%;
+  margin: 0 40px 40px 0;
+}
+
 /*--------------------------------------------------------------
 	4.0 Footer
 --------------------------------------------------------------*/

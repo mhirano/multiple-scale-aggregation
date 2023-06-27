@@ -13,19 +13,19 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: "PROJECT NAME"
-baseurl: "/project-page-template-phantom" # the subpath of your site, e.g. /blog
-url: "https://your-github-username.github.io" # the base hostname & protocol for your site, e.g. https://example.com
+title: "Multiple Scale Aggregation with Patch Multiplexing for High-speed Inter-vehicle Distance Estimation"
+baseurl: "/multiple-scale-aggregation" # the subpath of your site, e.g. /blog
+url: "https://mhirano.github.io" # the base hostname & protocol for your site, e.g. https://example.com
 # twitter_username: 'jamigibbs'
-github_username: 'your-github-username'
+github_username: 'mhirano'
 # medium_username: 'blog.jamigibbs.com'
 
 # Build settings
 markdown: kramdown
 
 ### Phantom settings
-footer_text: '© 2023 Your Name'
-admin_name: 'Your Name'
+footer_text: '© 2021 Masahiro Hirano'
+admin_name: 'Masahiro Hirano'
 google_analytics: "UA-9999999-99" # Update with your own tracking ID
 enable_contact: false
 
